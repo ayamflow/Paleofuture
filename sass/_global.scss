@@ -1,0 +1,47 @@
+body{
+	overflow: hidden;
+	background: url(../images/background.jpg) no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+}
+
+header{
+	width: 100%;
+	position: fixed;
+	top: 0;
+	z-index: 100;
+	left: 0;
+	height: 50px;
+	background: gray;
+
+	nav li{
+		float:left;
+		margin: 5px 1%;
+		width:15%;
+		list-style-type: none;
+	}
+}
+
+#preload
+{
+	position: absolute;
+	z-index: 99;
+	width:250px;
+	height:80px;
+	font-size:2em;
+	left:50%;
+	margin-left:-125px;
+	top:50%;
+	margin-top:-40px;
+	background-color: white;
+	padding:10px;
+	background-image: url(../images/preload.gif);
+	background-repeat: no-repeat;
+	background-position: 50%;
+}
+
+#container{
+	position: absolute;
+	top: 50%;
+	margin-top: -300px;
+}
