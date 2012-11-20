@@ -155,13 +155,15 @@ Timeline.prototype.dispatchArticles = function(data)
 		bottomFragment = document.createDocumentFragment(),
 		articles = $.makeArray($(data)[0].childNodes),
 		length = articles.length,
-		currentArticle, $current;
+		currentArticle, $current, position;
 
 	for(var i = 0; i < length; i++)
 	{
+		console.log(i, articles[i]);
 		currentArticle = articles[i];
 		$current = $(currentArticle);
-		if(i%2)
+		position = Constants.timeline.align[i];
+		if(position)
 		{
 			topFragment.appendChild(currentArticle);
 			$current.css({
@@ -254,7 +256,7 @@ Timeline.prototype.getArticlesByDecade = function(articles)
 	for(i=0; i < length; i++)
 	{
 		article = articles[i];
-		year = article.year;
+		year = this.yearToDecade(article.year);
 		id = 'articles-' + year;
 
 		if(!decades[id])
@@ -284,6 +286,7 @@ Timeline.prototype.formatArticle = function(article)
 {
 	var year = this.yearToDecade(article.year);
 		articleDiv = $('<div/>')
+	.append( $('<h2 class="year">' + year + '</h2>') )
 	.append( $('<h2>' + article.title + '</h2>') )
 	.append( $('<span class="date">' + article.date + "</span>") )
 	//.css({ 'background-image' : 'url(' + article.images[0] +')'})
@@ -305,13 +308,15 @@ Timeline.prototype.getPopularArticles = function(decades)
 	for(var i = 0; i < keysLength; i++)
 	{
 		articles = decades[keys[i]];
-		articles.sort(this.sortByViews);
-		for(var j = 0, k = Constants.timeline.count[i]; j < k; j++)
+		if(articles)
 		{
-			popularArticles.push(articles[j]);
+			articles.sort(this.sortByViews);
+			for(var j = 0, k = Constants.timeline.count[i]; j < k; j++)
+			{
+				popularArticles.push(articles[j]);
+			}
 		}
 	}
-
 	return popularArticles;
 };
 

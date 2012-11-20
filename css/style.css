@@ -129,6 +129,10 @@ header nav li {
 
 /* line 13, ../sass/_timeline.scss */
 .article {
+  -webkit-transition: opacity 1s ease-out;
+  -moz-transition: opacity 1s ease-out;
+  -o-transition: opacity 1s ease-out;
+  transition: opacity 1s ease-out;
   background-size: cover;
   margin: 3px;
   background-color: rgba(0, 0, 0, 0.2);
@@ -136,16 +140,33 @@ header nav li {
   float: left;
   overflow: hidden;
 }
-/* line 20, ../sass/_timeline.scss */
+/* line 21, ../sass/_timeline.scss */
 .article h2 {
   font-size: 23px;
 }
-/* line 23, ../sass/_timeline.scss */
+/* line 24, ../sass/_timeline.scss */
+.article .year {
+  font-size: 4em;
+  position: absolute;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+}
+/* line 29, ../sass/_timeline.scss */
 .article:hover {
   cursor: pointer;
 }
+/* line 31, ../sass/_timeline.scss */
+.article:hover .year {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
+/* line 34, ../sass/_timeline.scss */
+.article:hover h2, .article:hover span {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+}
 
-/* line 28, ../sass/_timeline.scss */
+/* line 40, ../sass/_timeline.scss */
 .decade-title {
   width: 175px;
   height: 95;
@@ -156,14 +177,14 @@ header nav li {
   z-index: 100;
   margin-left: 76px;
 }
-/* line 37, ../sass/_timeline.scss */
+/* line 49, ../sass/_timeline.scss */
 .decade-title h2 {
   font-size: 5em;
   line-height: 100px;
   color: #a04e8e;
 }
 
-/* line 44, ../sass/_timeline.scss */
+/* line 56, ../sass/_timeline.scss */
 #top, #bottom {
   min-height: 300px;
   height: 50%;
@@ -171,13 +192,13 @@ header nav li {
   overflow-y: hidden;
 }
 
-/* line 51, ../sass/_timeline.scss */
+/* line 63, ../sass/_timeline.scss */
 #bottom {
   margin-top: 5px;
   margin-left: 76px;
 }
 
-/* line 56, ../sass/_timeline.scss */
+/* line 68, ../sass/_timeline.scss */
 #timeline {
   position: fixed;
   left: 10%;
@@ -187,12 +208,12 @@ header nav li {
   font-size: 90%;
   width: 80%;
 }
-/* line 64, ../sass/_timeline.scss */
+/* line 76, ../sass/_timeline.scss */
 #timeline ul {
   list-style-type: none;
   line-height: 2em;
 }
-/* line 68, ../sass/_timeline.scss */
+/* line 80, ../sass/_timeline.scss */
 #timeline li {
   float: left;
   padding-left: 25px;

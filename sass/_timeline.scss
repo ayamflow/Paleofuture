@@ -11,6 +11,7 @@
 }
 
 .article{
+	@include transition(opacity 1s ease-out);
 	background-size: cover;
 	margin:3px;
 	background-color: rgba(0,0,0,0.2);
@@ -20,8 +21,19 @@
 	h2{
 	font-size:23px;
 	}
+	.year{
+		font-size:4em;
+		position:absolute;
+		@include opacity(0);
+	}
 	&:hover{
 		cursor: pointer;
+		& .year{
+			@include opacity(1);
+		}
+		& h2, & span{
+			@include opacity(0);
+		}
 	}
 }
 
