@@ -8,6 +8,7 @@ var Timeline = function()
 	this.decadesOffset = [];
 	this.articlesByDecade = [];
 	this.wrapperHeight = 605;
+	this.baseWidth = 1006;
 };
 
 Timeline.prototype.init = function(data)
@@ -17,10 +18,8 @@ Timeline.prototype.init = function(data)
 	this.articlesByDecade = this.getArticlesByDecade(data);
 	// Renvoie un tableau des 3-4 articles les plus populaires de chaque décennie
 	this.articles = this.getPopularArticles(this.articlesByDecade);
-
-	/* TODO */
+	// Créée un documentFragment contenant les articles
 	var fragment = this.renderArticles(this.articles);
-
 	// Place un documentFragment d'articles sur la timeline
 	this.dispatchArticles(fragment);
 
@@ -28,18 +27,30 @@ Timeline.prototype.init = function(data)
 
 Timeline.prototype.attachEvents = function()
 {
-	$('#timeline ul').delegate('li', 'click', this.onYearClick);
+	$('#timeline ul').delegate('li', 'click', this.onYearClick.bind(this));
 	$('#container').delegate('div.article', 'click', this.onArticleClick.bind(this));
-	this.overlay.delegate('div.decade-title', 'mouseenter', this.onDecadeMouseOver.bind(this));
-	this.overlay.delegate('div.decade-title', 'mouseleave', this.onDecadeMouseOut.bind(this));
+	this.attachDecadeEvents();
 };
 
 Timeline.prototype.detachEvents = function()
 {
-	$('#timeline ul').undelegate('li', 'click', this.onYearClick);
+	$('#timeline ul').undelegate('li', 'click', this.onYearClick.bind(this));
 	$('#container').undelegate('div.article', 'click', this.onArticleClick.bind(this));
-	this.overlay.undelegate('div.decade-title', 'mouseenter', this.onDecadeMouseOver.bind(this));
-	this.overlay.undelegate('div.decade-title', 'mouseleave', this.onDecadeMouseOut.bind(this));
+	this.detachDecadeEvents();
+};
+
+Timeline.prototype.attachDecadeEvents = function()
+{
+	this.overlay.delegate('div.decade-title', 'mouseenter', this.onDecadeMouseOver.bind(this));
+	this.overlay.delegate('div.decade-title', 'mouseleave', this.onDecadeMouseOut.bind(this));
+};
+
+Timeline.prototype.detachDecadeEvents = function()
+{
+	console.log('tue les évènements jusqu\' à la mort !');
+	this.overlay.off('mouseenter mouseleave');
+	//this.overlay.undelegate('div.decade-title', 'mouseenter', this.onDecadeMouseOver.bind(this));
+	//this.overlay.undelegate('div.decade-title', 'mouseleave', this.onDecadeMouseOut.bind(this));
 };
 
 Timeline.prototype.onDecadeMouseOver = function(event)
@@ -64,14 +75,76 @@ Timeline.prototype.onDecadeMouseOut = function(event)
 	});
 };
 
-Timeline.prototype.onArticleClick = function(event)
+Timeline.prototype.onYearClick = function(event)
 {
-	var id = $(event.currentTarget).data()['id'];
-	//console.log(id, this.articles[id]);
-	crossnav.init(this.articles, this.articles[id]);
+	this.clearGap(this.scrollTimeline, [event]);
 };
 
-Timeline.prototype.onYearClick = function(event)
+Timeline.prototype.onArticleClick = function(event)
+{
+	var $target = $(event.currentTarget),
+		id = $target.index();
+
+	this.clearGap(this.createGap, [id, $target]);
+};
+
+Timeline.prototype.createGap = function(id, $target)
+{
+	var self = this;
+	this.detachDecadeEvents();
+	var $topDiv = this.top.children().eq(id),
+		$bottomDiv = this.bottom.children().eq(id),
+		topOffsetLeft = $topDiv.offset().left - $(window).scrollLeft(),
+		bottomOffsetLeft = $bottomDiv.offset().left - $(window).scrollLeft(),
+		ratio = ((topOffsetLeft + bottomOffsetLeft) / 2) / window.innerWidth,
+		gap = 1000,
+		year = parseInt($target.attr('class').split(' ')[0].split('decade-')[1], 10),
+		targetYear;
+
+	$('html, body').stop().animate({
+		scrollLeft : $target.offset().left - $target.width()/2
+	}, 800, "easeOutQuad",
+	function()
+	{
+		console.log('callback createGap');
+		self.overlay.children().each(function(i)
+		{
+			targetYear = parseInt($(this).eq(i).children().eq(0).html(), 10);
+			console.log(year != targetYear);
+			if(targetYear != year)
+			{
+				TweenMax.to($(this), 1, {css:{opacity:0}}, Expo.easeOut);
+			}
+		});
+		TweenMax.to(self.overlay, 1, {css:{top: '40%'}}, Expo.easeOut);
+		TweenMax.to($topDiv, 1, {css:{marginRight: gap}, delay:0.15}, Expo.easeIn);
+		TweenMax.to($bottomDiv, 1, {css:{marginRight: gap}, delay:0.15}, Expo.easeIn);
+	});
+};
+
+Timeline.prototype.clearGap = function(callback, params)
+{
+	this.attachDecadeEvents();
+	var timelineParams = callback && params ? {onComplete:callback.bind(this), onCompleteParams:params} : {};
+	var timelineInit = new TimelineMax(timelineParams);
+
+	this.overlay.children().each(function()
+	{
+		timelineInit.insert(TweenMax.to($(this), 0.3, {css:{opacity:1}}));
+	});
+	timelineInit.insert(TweenMax.to(this.overlay, 0.3, {css:{top: '50%'}}));
+	this.top.children().each(function()
+	{
+		timelineInit.insert(TweenMax.to($(this), 0.3, {css:{margin : 3}}));
+	});
+	this.bottom.children().each(function()
+	{
+		timelineInit.insert(TweenMax.to($(this), 0.3, {css:{margin : 3}}));
+	});
+	timelineInit.play();
+};
+
+Timeline.prototype.scrollTimeline = function(event)
 {
 	var scrollTo = $(event.target).attr('data-scroll');
 	$('html, body').stop().animate({
@@ -115,14 +188,14 @@ Timeline.prototype.createTimeline = function()
 	wrapper.css('paddingRight', window.innerWidth/2);//wrapper.width() - this.overlay.children().last().offset().left);
 
 	this.attachEvents();
-	this.hidePreloader();
+	this.showTimeline();
 };
 
 Timeline.prototype.setWidth = function(container, callback)
 {
 	var divs = container.children(),
 		length = divs.length,
-		finalWidth = 6;
+		finalWidth = this.baseWidth;
 	for(var i = 0; i < length; i++)
 	{
 		finalWidth += divs[i].clientWidth + 6;
@@ -159,7 +232,6 @@ Timeline.prototype.dispatchArticles = function(data)
 
 	for(var i = 0; i < length; i++)
 	{
-		console.log(i, articles[i]);
 		currentArticle = articles[i];
 		$current = $(currentArticle);
 		position = Constants.timeline.align[i];
@@ -218,6 +290,13 @@ Timeline.prototype.dispatchTitles = function(data)
 	}
 
 	this.overlay.append(childs);
+};
+
+Timeline.prototype.showTimeline = function()
+{
+	this.hidePreloader();
+	TweenMax.to($('#articles-thumbs'), 1, {css:{opacity:2, paddingLeft : 600}}, Expo.easeInOut);
+	TweenMax.to(this.overlay, 1, {css:{left: 400}}, Expo.easeInOut);
 };
 
 Timeline.prototype.hidePreloader = function()
