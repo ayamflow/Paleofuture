@@ -9,6 +9,7 @@ var Timeline = function()
 	this.articlesByDecade = [];
 	this.wrapperHeight = 605;
 	this.baseWidth = 1006;
+	this.articleViewer = new ArticleViewer();
 };
 
 Timeline.prototype.init = function(data)
@@ -47,7 +48,6 @@ Timeline.prototype.attachDecadeEvents = function()
 
 Timeline.prototype.detachDecadeEvents = function()
 {
-	console.log('tue les évènements jusqu\' à la mort !');
 	this.overlay.off('mouseenter mouseleave');
 	//this.overlay.undelegate('div.decade-title', 'mouseenter', this.onDecadeMouseOver.bind(this));
 	//this.overlay.undelegate('div.decade-title', 'mouseleave', this.onDecadeMouseOut.bind(this));
@@ -99,27 +99,44 @@ Timeline.prototype.createGap = function(id, $target)
 		ratio = ((topOffsetLeft + bottomOffsetLeft) / 2) / window.innerWidth,
 		gap = 1000,
 		year = parseInt($target.attr('class').split(' ')[0].split('decade-')[1], 10),
-		targetYear;
+		targetYear,
+		refTitle = $target.children().eq(1).text(), refArticle, refOffset = $target.offset().left - $(window).scrollLeft() + $target.width(),
+		timelineArticle;
+	for(var i = 0, articles = this.articlesByDecade['articles-' + year], l = articles.length; i < l; i++)
+	{
+		if(articles[i].title == refTitle)
+		{
+			refArticle = articles[i];
+		}
+	}
 
-	$('html, body').stop().animate({
+	timelineArticle = new TimelineMax({onComplete:this.loadArticle.bind(this), onCompleteParams:[this.articles, refArticle, refOffset]});
+	self.overlay.children().each(function(i)
+	{
+		//targetYear = parseInt($(this).eq(i).children().eq(0).html(), 10);
+		//if(targetYear && targetYear != year)
+		//{
+			timelineArticle.insert(TweenMax.to($(this), 1, {css:{opacity:0}}, Expo.easeOut));
+		//}
+	});
+	timelineArticle.insert(TweenMax.to(self.overlay, 1, {css:{top: '40%'}}, Expo.easeOut));
+	timelineArticle.insert(TweenMax.to($topDiv, 1, {css:{marginRight: gap}, delay:0.15}, Expo.easeIn));
+	timelineArticle.insert(TweenMax.to($bottomDiv, 1, {css:{marginRight: gap}, delay:0.15}, Expo.easeIn));
+	timelineArticle.gotoAndStop(0);
+
+	$('body').stop().animate({
 		scrollLeft : $target.offset().left - $target.width()/2
-	}, 800, "easeOutQuad",
+	}, 800, "easeOutQuad").promise().done(
 	function()
 	{
-		console.log('callback createGap');
-		self.overlay.children().each(function(i)
-		{
-			targetYear = parseInt($(this).eq(i).children().eq(0).html(), 10);
-			console.log(year != targetYear);
-			if(targetYear != year)
-			{
-				TweenMax.to($(this), 1, {css:{opacity:0}}, Expo.easeOut);
-			}
-		});
-		TweenMax.to(self.overlay, 1, {css:{top: '40%'}}, Expo.easeOut);
-		TweenMax.to($topDiv, 1, {css:{marginRight: gap}, delay:0.15}, Expo.easeIn);
-		TweenMax.to($bottomDiv, 1, {css:{marginRight: gap}, delay:0.15}, Expo.easeIn);
+		timelineArticle.play();
 	});
+
+};
+
+Timeline.prototype.loadArticle = function(articles, article, offsetLeft)
+{
+	this.articleViewer.init(articles, article, offsetLeft);
 };
 
 Timeline.prototype.clearGap = function(callback, params)
@@ -213,7 +230,6 @@ Timeline.prototype.setWidth = function(container, callback)
 		{
 			if(!done && wrapper.height() == self.wrapperHeight)
 			{
-				console.log('setWidth callback');
 				done = true;
 				clearInterval(intervalCallback);
 				callback();

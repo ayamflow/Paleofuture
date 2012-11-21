@@ -1,0 +1,29 @@
+#article{
+	width: 1000px;
+	position: fixed;
+	top: 50%;
+	margin-top: -300px;
+	.content {
+		img{
+			float:left;
+			&:after{
+				clear:both;
+			}
+		}
+		&>*{
+			margin:10px;
+		}
+	}
+	&>div{
+		width: 600px;
+	}
+	&>ul{
+		width: 400px;
+		position: absolute;
+		left: 600px;
+		top: 0;
+	}
+	h2{
+		font-size:24px;
+	}
+}
