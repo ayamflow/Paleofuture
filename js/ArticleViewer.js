@@ -3,10 +3,12 @@ var ArticleViewer = function()
 	this.container = $('#article');
 	this.articleWrapper = $('#viewer');
 	this.articlesByCategory = $('#byCategory');
+	this.sideTitle = this.articlesByCategory.find('h2');
 	this.initialized = false;
+	this.listScroll = 0;
 };
 
-ArticleViewer.prototype.init = function(data, article, offsetLeft)
+ArticleViewer.prototype.init = function(data, article, offsetLeft, type)
 {
 	if(!this.initialized)
 	{
@@ -18,18 +20,22 @@ ArticleViewer.prototype.init = function(data, article, offsetLeft)
 		this.offsetLeft = offsetLeft;
 
 		var articlesFromCategory,
-			category = article.category,
+			category,
 			articles = [],
-			decade = this.yearToDecade(article.year),
+			decade = article.decade,//this.yearToDecade(article.year),
 			articleList;
 
 		//data.sort(this.sortByDecade);
 		articles = this.getArticlesFromDecade(data, decade);
-		articles = this.getArticlesFromCategory(articles, category);
+		if(type == "category")
+		{
+			category = article.category;
+			articles = this.getArticlesFromCategory(articles, category);
+		}
 		articleList = this.updateArticlesList(articles, article);
 		if(articleList.length > 1)
 		{
-			this.renderArticleList(articleList);
+			this.renderArticleList(articleList, type);
 		}
 		this.renderArticle(article);
 		//this.categories = $.getJSON('data/categories.json', callback);
@@ -39,11 +45,40 @@ ArticleViewer.prototype.init = function(data, article, offsetLeft)
 		console.log('ArticleViewer already initialized');
 		this.clearArticleViewer();
 		this.initialized = false;
-		this.init(data, article, offsetLeft);
+		this.init(data, article, offsetLeft, type);
 	}
 	this.initialized = true;
+	this.attachEvents();
 };
 
+/*===============================*/
+/*				EVENTS			 */
+/*===============================*/
+
+ArticleViewer.prototype.attachEvents = function()
+{
+	this.articlesByCategory.delegate('ul', 'mouseover', this.onListMouseOver.bind(this));
+};
+
+ArticleViewer.prototype.detachEvents = function()
+{
+	this.articlesByCategory.off('mouseover mouseleave');
+};
+
+ArticleViewer.prototype.onListMouseOver = function(event)
+{
+	var ref = this.sideList.offset().top,
+		mouseY = event.clientY - ref;
+	if(mouseY < 150)
+	{
+		this.listScroll -= 5;
+	}
+	else if(mouseY > this.sideList.height() - 150)
+	{
+		this.listScroll += 5;
+	}
+	this.sideList.scrollTop(this.listScroll);
+};
 
 /*===============================*/
 /*			RENDERING HTML		 */
@@ -51,24 +86,37 @@ ArticleViewer.prototype.init = function(data, article, offsetLeft)
 
 ArticleViewer.prototype.clearArticleViewer = function()
 {
+	this.detachEvents();
 	TweenMax.to(this.container, 1, {css:{opacity:1}}, Expo.easeOut);
 	this.articlesByCategory.html('');
 	this.articleWrapper.html('');
 };
 
-ArticleViewer.prototype.renderArticleList = function(articles)
+ArticleViewer.prototype.renderArticleList = function(articles, type)
 {
-	var article, articlesFragment = document.createDocumentFragment();
+	var article, title, list, articlesFragment = document.createDocumentFragment();
 
-	$(articlesFragment).append($('<li><h2>Other articles in ' + articles[0].category + '</h2></li>'));
+	if(type == "category")
+	{
+		title = '<h2>Other articles in ' + articles[0].category + '</h2>';
+	}
+	else
+	{
+		title = '<h2>Other articles in ' + articles[0].decade + '\'s</h2>';
+	}
+
+	list = $('<ul/>');
 	for(var i = 0, l = articles.length; i < l; i++)
 	{
 		article = $('<li/>')
 		.text(articles[i].title)
-		.appendTo(articlesFragment);
+		.appendTo(list);
 	}
-	this.articlesByCategory.append(articlesFragment);
 
+	$(articlesFragment).prepend(title).append(list);
+	this.articlesByCategory.append(articlesFragment);
+	this.sideList = this.articlesByCategory.find('ul');
+	this.sideList.height($('#timeline').offset().top - this.articleWrapper.offset().top - 150);
 };
 
 ArticleViewer.prototype.renderArticle = function(article)
@@ -94,10 +142,10 @@ ArticleViewer.prototype.renderArticle = function(article)
 ArticleViewer.prototype.updateArticlesList = function(articles, article)
 {
 	var length = articles.length, articleList = [];
-	console.log(article.category);
+
 	for(var i = 0; i < length; i++)
 	{
-		console.log(articles[i].title, article.title);
+		//console.log(articles[i].title, article.title);
 		if(articles[i].title != article.title)
 		{
 			articleList.push(articles[i]);

@@ -14,16 +14,27 @@
 			margin:10px;
 		}
 	}
-	&>div{
+	#viewer
+	{
 		width: 600px;
+		position: absolute;
+		top:0;
+		left:0;
+		h2{
+			font-size:24px;
+		}
 	}
-	&>ul{
+	#byCategory
+	{
 		width: 400px;
 		position: absolute;
-		left: 600px;
+		left: 620px;
 		top: 0;
-	}
-	h2{
-		font-size:24px;
+		h2{
+			font-size:24px;
+		}
+		ul{
+			overflow:hidden;
+		}
 	}
 }
