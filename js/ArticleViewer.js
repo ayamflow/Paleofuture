@@ -1,5 +1,6 @@
 var ArticleViewer = function()
 {
+	this.container = $('#article');
 	this.articleWrapper = $('#viewer');
 	this.articlesByCategory = $('#byCategory');
 	this.initialized = false;
@@ -43,23 +44,14 @@ ArticleViewer.prototype.init = function(data, article, offsetLeft)
 	this.initialized = true;
 };
 
-ArticleViewer.prototype.updateArticlesList = function(articles, article)
-{
-	var length = articles.length, articleList = [];
 
-	for(var i = 0; i < length; i++)
-	{
-		if(articles[i].title != article.title)
-		{
-			articleList.push(articles[i]);
-		}
-	}
-
-	return articleList;
-};
+/*===============================*/
+/*			RENDERING HTML		 */
+/*===============================*/
 
 ArticleViewer.prototype.clearArticleViewer = function()
 {
+	TweenMax.to(this.container, 1, {css:{opacity:1}}, Expo.easeOut);
 	this.articlesByCategory.html('');
 	this.articleWrapper.html('');
 };
@@ -81,21 +73,43 @@ ArticleViewer.prototype.renderArticleList = function(articles)
 
 ArticleViewer.prototype.renderArticle = function(article)
 {
+	this.container
+	.css({'left' : this.offsetLeft})
+	.css({'opacity' : 0});
 	var articleFragment = document.createDocumentFragment();
 	$(articleFragment)
 	.attr('id', 'article')
 	.append( $('<h2>' + article.title + '</h2>') )
-	.append( $('<span class="date">' + article.date + '</span>') )
-	.append( $('<div class="content">' + article.content + '</div>') )
+	//.append( $('<span class="date">' + article.date + '</span>') )
+	.append( $('<div class="content">' + article.text + '</div>') )
 	.appendTo(this.articleWrapper);
 	this.articleWrapper
-	.css({'left' : this.offsetLeft})
-	.css({'background' : 'yellow'})
 	.find('.content').slimScroll({
 		width : this.articleWrapper.width(),
 		height : $('#timeline').offset().top - this.articleWrapper.offset().top - 150
 	});
+	TweenMax.to(this.container, 1, {css:{opacity:1}}, Expo.easeOut);
 };
+
+ArticleViewer.prototype.updateArticlesList = function(articles, article)
+{
+	var length = articles.length, articleList = [];
+	console.log(article.category);
+	for(var i = 0; i < length; i++)
+	{
+		console.log(articles[i].title, article.title);
+		if(articles[i].title != article.title)
+		{
+			articleList.push(articles[i]);
+		}
+	}
+
+	return articleList;
+};
+
+/*===============================*/
+/*		GETTERS AND UTILITIES	 */
+/*===============================*/
 
 ArticleViewer.prototype.getArticlesFromDecade = function(articles, decade)
 {
@@ -104,10 +118,13 @@ ArticleViewer.prototype.getArticlesFromDecade = function(articles, decade)
 	for(var i = 0, l = articles.length; i < l; i++)
 	{
 		article = articles[i];
-		articleDecade = this.yearToDecade(article.year);
-		if(articleDecade == decade)
+		if(article)
 		{
-			articlesFromDecade.push(article);
+			articleDecade = article.decade;//this.yearToDecade(article.year);
+			if(articleDecade == decade)
+			{
+				articlesFromDecade.push(article);
+			}
 		}
 	}
 

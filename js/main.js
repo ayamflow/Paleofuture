@@ -4,7 +4,7 @@ document.ready = function()
 {
 	timeline = new Timeline();
 
-	$.getJSON('data/contents.json', function(data)
+	$.getJSON('data/articlesClean.json', function(data)
 	{
 		timeline.init(data);
 	});

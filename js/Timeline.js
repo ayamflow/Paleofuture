@@ -8,13 +8,14 @@ var Timeline = function()
 	this.decadesOffset = [];
 	this.articlesByDecade = [];
 	this.wrapperHeight = 605;
-	this.baseWidth = 1006;
+	this.gapWidth = 1100;
+	this.baseWidth = this.gapWidth + 6;
 	this.articleViewer = new ArticleViewer();
 };
 
 Timeline.prototype.init = function(data)
 {
-	data.sort(this.sortByDecade);
+	data.sort(this.sortByYear);
 	// Renvoie un double tableau des articles classés par décennie
 	this.articlesByDecade = this.getArticlesByDecade(data);
 	// Renvoie un tableau des 3-4 articles les plus populaires de chaque décennie
@@ -25,6 +26,10 @@ Timeline.prototype.init = function(data)
 	this.dispatchArticles(fragment);
 
 };
+
+/*===============================*/
+/*				EVENTS			 */
+/*===============================*/
 
 Timeline.prototype.attachEvents = function()
 {
@@ -49,8 +54,6 @@ Timeline.prototype.attachDecadeEvents = function()
 Timeline.prototype.detachDecadeEvents = function()
 {
 	this.overlay.off('mouseenter mouseleave');
-	//this.overlay.undelegate('div.decade-title', 'mouseenter', this.onDecadeMouseOver.bind(this));
-	//this.overlay.undelegate('div.decade-title', 'mouseleave', this.onDecadeMouseOut.bind(this));
 };
 
 Timeline.prototype.onDecadeMouseOver = function(event)
@@ -77,15 +80,69 @@ Timeline.prototype.onDecadeMouseOut = function(event)
 
 Timeline.prototype.onYearClick = function(event)
 {
+	this.articleViewer.clearArticleViewer();
 	this.clearGap(this.scrollTimeline, [event]);
 };
 
 Timeline.prototype.onArticleClick = function(event)
 {
+	this.articleViewer.clearArticleViewer();
+
 	var $target = $(event.currentTarget),
 		id = $target.index();
 
 	this.clearGap(this.createGap, [id, $target]);
+};
+
+/*===============================*/
+/*		TIMELINE ANIMATION		 */
+/*===============================*/
+
+Timeline.prototype.showTimeline = function()
+{
+	this.hidePreloader();
+	TweenMax.to($('#articles-thumbs'), 1, {css:{opacity:2, paddingLeft : 600}}, Expo.easeInOut);
+	TweenMax.to(this.overlay, 1, {css:{left: 400}}, Expo.easeInOut);
+};
+
+Timeline.prototype.scrollTimeline = function(event)
+{
+	var scrollTo = $(event.target).attr('data-scroll');
+	$('html, body').stop().animate({
+		scrollLeft : scrollTo
+	}, 1000, "easeInOutQuad");
+};
+
+Timeline.prototype.hidePreloader = function()
+{
+	$('#preload').hide();
+};
+
+Timeline.prototype.showPreloader = function()
+{
+	$('#preload').show();
+};
+
+Timeline.prototype.clearGap = function(callback, params)
+{
+	this.attachDecadeEvents();
+	var timelineParams = callback && params ? {onComplete:callback.bind(this), onCompleteParams:params} : {};
+	var timelineInit = new TimelineMax(timelineParams);
+
+	this.overlay.children().each(function()
+	{
+		timelineInit.insert(TweenMax.to($(this), 0.6, {css:{opacity:1}}));
+	});
+	timelineInit.insert(TweenMax.to(this.overlay, 0.6, {css:{top: '50%'}}));
+	this.top.children().each(function()
+	{
+		timelineInit.insert(TweenMax.to($(this), 0.6, {css:{margin : 3}}));
+	});
+	this.bottom.children().each(function()
+	{
+		timelineInit.insert(TweenMax.to($(this), 0.6, {css:{margin : 3}}));
+	});
+	timelineInit.play();
 };
 
 Timeline.prototype.createGap = function(id, $target)
@@ -97,11 +154,11 @@ Timeline.prototype.createGap = function(id, $target)
 		topOffsetLeft = $topDiv.offset().left - $(window).scrollLeft(),
 		bottomOffsetLeft = $bottomDiv.offset().left - $(window).scrollLeft(),
 		ratio = ((topOffsetLeft + bottomOffsetLeft) / 2) / window.innerWidth,
-		gap = 1000,
 		year = parseInt($target.attr('class').split(' ')[0].split('decade-')[1], 10),
 		targetYear,
-		refTitle = $target.children().eq(1).text(), refArticle, refOffset = $target.offset().left - $(window).scrollLeft() + $target.width(),
+		refTitle = $target.children().eq(1).text(), refArticle, refOffset = $topDiv.offset().left + $topDiv.width() > $bottomDiv.offset().left +$bottomDiv.width() ? $topDiv.offset().left + $topDiv.width() + 50 : $bottomDiv.offset().left + $bottomDiv.width() + 50,
 		timelineArticle;
+
 	for(var i = 0, articles = this.articlesByDecade['articles-' + year], l = articles.length; i < l; i++)
 	{
 		if(articles[i].title == refTitle)
@@ -120,58 +177,22 @@ Timeline.prototype.createGap = function(id, $target)
 		//}
 	});
 	timelineArticle.insert(TweenMax.to(self.overlay, 1, {css:{top: '40%'}}, Expo.easeOut));
-	timelineArticle.insert(TweenMax.to($topDiv, 1, {css:{marginRight: gap}, delay:0.15}, Expo.easeIn));
-	timelineArticle.insert(TweenMax.to($bottomDiv, 1, {css:{marginRight: gap}, delay:0.15}, Expo.easeIn));
+	timelineArticle.insert(TweenMax.to($topDiv, 1, {css:{marginRight: this.gapWidth}, delay:0.15}, Expo.easeIn));
+	timelineArticle.insert(TweenMax.to($bottomDiv, 1, {css:{marginRight: this.gapWidth}, delay:0.15}, Expo.easeIn));
 	timelineArticle.gotoAndStop(0);
 
 	$('body').stop().animate({
-		scrollLeft : $target.offset().left - $target.width()/2
-	}, 800, "easeOutQuad").promise().done(
+		scrollLeft : $target.offset().left - 50// - $target.width()/2
+	}, 1000, "easeOutQuad").promise().done(
 	function()
 	{
 		timelineArticle.play();
 	});
-
-};
-
-Timeline.prototype.loadArticle = function(articles, article, offsetLeft)
-{
-	this.articleViewer.init(articles, article, offsetLeft);
-};
-
-Timeline.prototype.clearGap = function(callback, params)
-{
-	this.attachDecadeEvents();
-	var timelineParams = callback && params ? {onComplete:callback.bind(this), onCompleteParams:params} : {};
-	var timelineInit = new TimelineMax(timelineParams);
-
-	this.overlay.children().each(function()
-	{
-		timelineInit.insert(TweenMax.to($(this), 0.3, {css:{opacity:1}}));
-	});
-	timelineInit.insert(TweenMax.to(this.overlay, 0.3, {css:{top: '50%'}}));
-	this.top.children().each(function()
-	{
-		timelineInit.insert(TweenMax.to($(this), 0.3, {css:{margin : 3}}));
-	});
-	this.bottom.children().each(function()
-	{
-		timelineInit.insert(TweenMax.to($(this), 0.3, {css:{margin : 3}}));
-	});
-	timelineInit.play();
-};
-
-Timeline.prototype.scrollTimeline = function(event)
-{
-	var scrollTo = $(event.target).attr('data-scroll');
-	$('html, body').stop().animate({
-		scrollLeft : scrollTo
-	}, 1000, "easeInOutQuad");
 };
 
 Timeline.prototype.createTimeline = function()
 {
-	//this.decades.sort(this.sortByDecade);
+	this.decades.sort(this.sortByDecade);
 
 	var that = this,
 		ul = $('<ul/>').appendTo(this.timeline),
@@ -208,6 +229,11 @@ Timeline.prototype.createTimeline = function()
 	this.showTimeline();
 };
 
+Timeline.prototype.loadArticle = function(articles, article, offsetLeft)
+{
+	this.articleViewer.init(articles, article, offsetLeft);
+};
+
 Timeline.prototype.setWidth = function(container, callback)
 {
 	var divs = container.children(),
@@ -236,6 +262,52 @@ Timeline.prototype.setWidth = function(container, callback)
 			}
 		}, 50);
 	}
+};
+
+/*===============================*/
+/*			FORMATTING			 */
+/*===============================*/
+
+Timeline.prototype.renderArticles = function(articles)
+{
+	var length = articles.length,
+	articlesFragment = document.createDocumentFragment(),
+	article;
+
+	for(var i = 0; i < length; i++)
+	{
+		article = articles[i];
+		if(article)
+		{
+			this.formatArticle(article).appendTo(articlesFragment);
+		}
+	}
+	return articlesFragment;
+};
+
+Timeline.prototype.formatArticle = function(article)
+{
+	var year = article.decade;//this.yearToDecade(article.year);
+		articleDiv = $('<div/>')
+	.append( $('<h2 class="year">' + year + '</h2>') )
+	.append( $('<h2>' + article.title + '</h2>') )
+	//.append( $('<span class="date">' + article.date + "</span>") )
+	.append( $('<span class="tags">' + article.tags.join(', ') + "</span>") )
+	//.css({ 'background-image' : 'url(' + article.images[0] +')'})
+	//.append( $('<div>' + article.content + '</div>') )
+	.addClass('decade-' + year)
+	.addClass('article');
+	this.updateDecades(year);
+	return articleDiv;
+};
+
+Timeline.prototype.formatTitle = function(year)
+{
+		var titleDiv = $('<div/>')
+		.addClass('decade-title')
+		.addClass('title-' + year)
+		.append($('<h2>' + year + '</h2>'));
+		return titleDiv;
 };
 
 Timeline.prototype.dispatchArticles = function(data)
@@ -268,6 +340,7 @@ Timeline.prototype.dispatchArticles = function(data)
 				height : Constants.timeline.height[i]
 			});
 		}
+		console.log(currentArticle);
 	}
 
 	this.top.append(topFragment);
@@ -308,39 +381,9 @@ Timeline.prototype.dispatchTitles = function(data)
 	this.overlay.append(childs);
 };
 
-Timeline.prototype.showTimeline = function()
-{
-	this.hidePreloader();
-	TweenMax.to($('#articles-thumbs'), 1, {css:{opacity:2, paddingLeft : 600}}, Expo.easeInOut);
-	TweenMax.to(this.overlay, 1, {css:{left: 400}}, Expo.easeInOut);
-};
-
-Timeline.prototype.hidePreloader = function()
-{
-	$('#preload').hide();
-};
-
-Timeline.prototype.showPreloader = function()
-{
-	$('#preload').show();
-};
-
-Timeline.prototype.updateDecades = function(year)
-{
-	if(_.indexOf(this.decades, year) === -1)
-	{
-		this.decades.push(year);
-	}
-};
-
-Timeline.prototype.formatTitle = function(year)
-{
-		var titleDiv = $('<div/>')
-		.addClass('decade-title')
-		.addClass('title-' + year)
-		.append($('<h2>' + year + '</h2>'));
-		return titleDiv;
-};
+/*===============================*/
+/*		GETTERS AND UTILITIES	 */
+/*===============================*/
 
 Timeline.prototype.getArticlesByDecade = function(articles)
 {
@@ -351,7 +394,7 @@ Timeline.prototype.getArticlesByDecade = function(articles)
 	for(i=0; i < length; i++)
 	{
 		article = articles[i];
-		year = this.yearToDecade(article.year);
+		year = article.decade;//this.yearToDecade(article.year);
 		id = 'articles-' + year;
 
 		if(!decades[id])
@@ -364,34 +407,6 @@ Timeline.prototype.getArticlesByDecade = function(articles)
 	return decades;
 };
 
-Timeline.prototype.renderArticles = function(articles)
-{
-	var length = articles.length,
-	articlesFragment = document.createDocumentFragment();
-
-	for(var i = 0; i < length; i++)
-	{
-		this.formatArticle(articles[i])
-		.appendTo(articlesFragment);
-	}
-	return articlesFragment;
-};
-
-Timeline.prototype.formatArticle = function(article)
-{
-	var year = this.yearToDecade(article.year);
-		articleDiv = $('<div/>')
-	.append( $('<h2 class="year">' + year + '</h2>') )
-	.append( $('<h2>' + article.title + '</h2>') )
-	.append( $('<span class="date">' + article.date + "</span>") )
-	//.css({ 'background-image' : 'url(' + article.images[0] +')'})
-	//.append( $('<div>' + article.content + '</div>') )
-	.addClass('decade-' + year)
-	.addClass('article');
-	this.updateDecades(year);
-	return articleDiv;
-};
-
 Timeline.prototype.getPopularArticles = function(decades)
 {
 	var length = decades.length,
@@ -399,7 +414,7 @@ Timeline.prototype.getPopularArticles = function(decades)
 		keysLength = keys.length,
 		articles,
 		popularArticles = [];
-
+		keys.sort(this.sortDecadeKeys);
 	for(var i = 0; i < keysLength; i++)
 	{
 		articles = decades[keys[i]];
@@ -415,6 +430,14 @@ Timeline.prototype.getPopularArticles = function(decades)
 	return popularArticles;
 };
 
+Timeline.prototype.updateDecades = function(year)
+{
+	if(_.indexOf(this.decades, year) === -1)
+	{
+		this.decades.push(year);
+	}
+};
+
 Timeline.prototype.yearToDecade = function(year)
 {
 	return year.substr(0, year.length-1) + "0";
@@ -425,7 +448,17 @@ Timeline.prototype.sortByViews = function(a, b)
 	return b.views - a.views;
 };
 
-Timeline.prototype.sortByDecade = function(a, b)
+Timeline.prototype.sortByYear = function(a, b)
 {
 	return b.year - a.year;
+};
+
+Timeline.prototype.sortDecadeKeys = function(a, b)
+{
+	return b.split('articles-')[1] - a.split('articles-')[1];
+};
+
+Timeline.prototype.sortByDecade = function(a, b)
+{
+	return b - a;
 };
