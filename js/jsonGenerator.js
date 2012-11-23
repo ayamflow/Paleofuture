@@ -21,19 +21,26 @@ var cat = [
 l = cat.length,
 articles;
 
-var init = function init(data)
+var init = function init(articles)
 {
-	var length = data.length;
+	var l = articles.length, i;
 
-	for(var i = 0; i < length; i++)
+	for(i=0; i < l;i++)
 	{
-		data[i].views = ~~(Math.random() * (9999 - 1000) + 1000);
+		articles[i].links.forEach(function(d)
+		{
+			if((/\.(jpeg|jpg|gif|png)$/).test(d.href))
+			{
+				articles[i].image = d.href;
+			}
+		});
 	}
-	return JSON.stringify(data);
+
+	return JSON.stringify(articles);
 };
 
 
-$.getJSON('data/articlesClean.json', function(data)
+$.getJSON('data/paleoClean.json', function(data)
 {
 	console.log(init(data));
 });

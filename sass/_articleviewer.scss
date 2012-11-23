@@ -1,34 +1,48 @@
 #article{
+	z-index:-100;
+	opacity:0;
 	width: 1000px;
 	position: absolute;
 	top: 50%;
 	margin-top: -300px;
-	.content {
-		img{
-			float:left;
-			&:after{
-				clear:both;
-			}
-		}
-		&>*{
-			margin:10px;
-		}
+	#categories
+	{
+		position:absolute;
+		left:0;
+		top:0;
+		width:150px;
 	}
 	#viewer
 	{
 		width: 600px;
 		position: absolute;
 		top:0;
-		left:0;
+		left:170px;
 		h2{
 			font-size:24px;
+		}
+		.content {
+			margin-top:20px;
+			img {
+				float:left;
+				width:380px;
+				height:200px;
+				margin: 10px;
+				&:after{
+					clear:both;
+				}
+			}
+			&>*{
+				margin:10px;
+			}
 		}
 	}
 	#byCategory
 	{
 		width: 400px;
+		overflow:hidden;
 		position: absolute;
-		left: 620px;
+		left: 790px;
 		top: 0;
 		h2{
 			font-size:24px;

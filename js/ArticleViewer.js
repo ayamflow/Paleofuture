@@ -1,4 +1,4 @@
-var ArticleViewer = function()
+var ArticleViewer = function(categories)
 {
 	this.container = $('#article');
 	this.articleWrapper = $('#viewer');
@@ -6,6 +6,9 @@ var ArticleViewer = function()
 	this.sideTitle = this.articlesByCategory.find('h2');
 	this.initialized = false;
 	this.listScroll = 0;
+	this.categories = categories;
+	this.domCategories = $('#categories');
+	this.createCategoriesList();
 };
 
 ArticleViewer.prototype.init = function(data, article, offsetLeft, type)
@@ -42,13 +45,29 @@ ArticleViewer.prototype.init = function(data, article, offsetLeft, type)
 	}
 	else
 	{
-		console.log('ArticleViewer already initialized');
 		this.clearArticleViewer();
 		this.initialized = false;
 		this.init(data, article, offsetLeft, type);
 	}
 	this.initialized = true;
 	this.attachEvents();
+};
+
+ArticleViewer.prototype.createCategoriesList = function()
+{
+	var length = this.categories.length,
+		category,
+		categoriesFragement = $(document.createDocumentFragment()),
+		list = $('<ul/>').appendTo(categoriesFragement);
+
+	for(var i = 0; i < length; i++)
+	{
+		category = $('<li/>')
+		.text(this.categories[i])
+		.appendTo(list);
+	}
+	list.appendTo(categoriesFragement);
+	this.domCategories.append(categoriesFragement);
 };
 
 /*===============================*/
@@ -58,6 +77,7 @@ ArticleViewer.prototype.init = function(data, article, offsetLeft, type)
 ArticleViewer.prototype.attachEvents = function()
 {
 	this.articlesByCategory.delegate('ul', 'mouseover', this.onListMouseOver.bind(this));
+	this.articlesByCategory.delegate('ul', 'mouseleave', this.onListMouseOut.bind(this));
 };
 
 ArticleViewer.prototype.detachEvents = function()
@@ -68,17 +88,18 @@ ArticleViewer.prototype.detachEvents = function()
 ArticleViewer.prototype.onListMouseOver = function(event)
 {
 	var ref = this.sideList.offset().top,
-		mouseY = event.clientY - ref;
-	if(mouseY < 150)
-	{
-		this.listScroll -= 5;
-	}
-	else if(mouseY > this.sideList.height() - 150)
-	{
-		this.listScroll += 5;
-	}
-	this.sideList.scrollTop(this.listScroll);
+		mouseY,
+		self = this,
+		top = (event.pageY - ref) * (this.sideList.children().length*5) / 1000;
+
+	this.sideList.scrollTop(top);
 };
+
+ArticleViewer.prototype.onListMouseOut = function(event)
+{
+	//console.log('mouse out');
+};
+
 
 /*===============================*/
 /*			RENDERING HTML		 */
@@ -87,7 +108,7 @@ ArticleViewer.prototype.onListMouseOver = function(event)
 ArticleViewer.prototype.clearArticleViewer = function()
 {
 	this.detachEvents();
-	TweenMax.to(this.container, 1, {css:{opacity:1}}, Expo.easeOut);
+	TweenMax.to(this.container, 1, {css:{opacity:0}}, Expo.easeOut);
 	this.articlesByCategory.html('');
 	this.articleWrapper.html('');
 };
@@ -122,14 +143,13 @@ ArticleViewer.prototype.renderArticleList = function(articles, type)
 ArticleViewer.prototype.renderArticle = function(article)
 {
 	this.container
-	.css({'left' : this.offsetLeft})
-	.css({'opacity' : 0});
+	.css({'left' : this.offsetLeft});
 	var articleFragment = document.createDocumentFragment();
 	$(articleFragment)
 	.attr('id', 'article')
 	.append( $('<h2>' + article.title + '</h2>') )
 	//.append( $('<span class="date">' + article.date + '</span>') )
-	.append( $('<div class="content">' + article.text + '</div>') )
+	.append( $('<div class="content">' + article.text + '</div>').prepend( article.image ? $('<img/>').attr('src', article.image) : "") )
 	.appendTo(this.articleWrapper);
 	this.articleWrapper
 	.find('.content').slimScroll({

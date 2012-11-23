@@ -131,9 +131,12 @@ header nav li {
 #articles-thumbs {
   padding-left: 500px;
   opacity: 0;
+  overflow: hidden;
+  position: relative;
+  height: 605px;
 }
 
-/* line 14, ../sass/_timeline.scss */
+/* line 17, ../sass/_timeline.scss */
 .article {
   -webkit-transition: opacity 1s ease-out;
   -moz-transition: opacity 1s ease-out;
@@ -146,33 +149,33 @@ header nav li {
   float: left;
   overflow: hidden;
 }
-/* line 22, ../sass/_timeline.scss */
+/* line 25, ../sass/_timeline.scss */
 .article h2 {
   font-size: 23px;
 }
-/* line 25, ../sass/_timeline.scss */
+/* line 28, ../sass/_timeline.scss */
 .article .year {
   font-size: 4em;
   position: absolute;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
 }
-/* line 30, ../sass/_timeline.scss */
+/* line 33, ../sass/_timeline.scss */
 .article:hover {
   cursor: pointer;
 }
-/* line 32, ../sass/_timeline.scss */
+/* line 35, ../sass/_timeline.scss */
 .article:hover .year {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
   opacity: 1;
 }
-/* line 35, ../sass/_timeline.scss */
+/* line 38, ../sass/_timeline.scss */
 .article:hover h2, .article:hover span {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
 }
 
-/* line 41, ../sass/_timeline.scss */
+/* line 44, ../sass/_timeline.scss */
 .decade-title {
   width: 175px;
   height: 95;
@@ -183,46 +186,56 @@ header nav li {
   z-index: 100;
   margin-left: 76px;
 }
-/* line 50, ../sass/_timeline.scss */
+/* line 53, ../sass/_timeline.scss */
 .decade-title h2 {
   font-size: 5em;
   line-height: 100px;
   color: #a04e8e;
 }
 
-/* line 57, ../sass/_timeline.scss */
+/* line 60, ../sass/_timeline.scss */
 #top, #bottom {
   min-height: 300px;
   height: 50%;
   overflow-y: hidden;
 }
 
-/* line 63, ../sass/_timeline.scss */
+/* line 66, ../sass/_timeline.scss */
 #bottom {
   margin-top: 5px;
   margin-left: 76px;
 }
 
-/* line 68, ../sass/_timeline.scss */
+/* line 71, ../sass/_timeline.scss */
 #timeline {
   position: fixed;
-  left: 10%;
+  left: 35%;
   bottom: 0;
   z-index: 99;
   background-color: gray;
   font-size: 90%;
-  width: 80%;
+  /*width: 30%;
+  overflow: hidden;*/
+  height: auto;
+  max-height: 40px;
 }
-/* line 76, ../sass/_timeline.scss */
+/* line 82, ../sass/_timeline.scss */
+#timeline div {
+  width: 50px;
+  height: 50px;
+  background-color: green;
+  position: absolute;
+}
+/* line 88, ../sass/_timeline.scss */
 #timeline:hover {
   cursor: move;
 }
-/* line 79, ../sass/_timeline.scss */
+/* line 91, ../sass/_timeline.scss */
 #timeline ul {
   list-style-type: none;
   line-height: 2em;
 }
-/* line 83, ../sass/_timeline.scss */
+/* line 95, ../sass/_timeline.scss */
 #timeline li {
   -webkit-user-select: none;
   float: left;
@@ -234,46 +247,183 @@ header nav li {
 
 /* line 1, ../sass/_articleviewer.scss */
 #article {
+  z-index: -100;
+  opacity: 0;
   width: 1000px;
   position: absolute;
   top: 50%;
   margin-top: -300px;
 }
-/* line 7, ../sass/_articleviewer.scss */
-#article .content img {
-  float: left;
-}
 /* line 9, ../sass/_articleviewer.scss */
-#article .content img:after {
-  clear: both;
+#article #categories {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 150px;
 }
-/* line 13, ../sass/_articleviewer.scss */
-#article .content > * {
-  margin: 10px;
-}
-/* line 18, ../sass/_articleviewer.scss */
+/* line 16, ../sass/_articleviewer.scss */
 #article #viewer {
   width: 600px;
   position: absolute;
   top: 0;
-  left: 0;
+  left: 170px;
 }
-/* line 23, ../sass/_articleviewer.scss */
+/* line 21, ../sass/_articleviewer.scss */
 #article #viewer h2 {
   font-size: 24px;
 }
-/* line 28, ../sass/_articleviewer.scss */
+/* line 24, ../sass/_articleviewer.scss */
+#article #viewer .content {
+  margin-top: 20px;
+}
+/* line 26, ../sass/_articleviewer.scss */
+#article #viewer .content img {
+  float: left;
+  width: 380px;
+  height: 200px;
+  margin: 10px;
+}
+/* line 31, ../sass/_articleviewer.scss */
+#article #viewer .content img:after {
+  clear: both;
+}
+/* line 35, ../sass/_articleviewer.scss */
+#article #viewer .content > * {
+  margin: 10px;
+}
+/* line 41, ../sass/_articleviewer.scss */
 #article #byCategory {
   width: 400px;
+  overflow: hidden;
   position: absolute;
-  left: 620px;
+  left: 790px;
   top: 0;
 }
-/* line 33, ../sass/_articleviewer.scss */
+/* line 47, ../sass/_articleviewer.scss */
 #article #byCategory h2 {
   font-size: 24px;
 }
-/* line 36, ../sass/_articleviewer.scss */
+/* line 50, ../sass/_articleviewer.scss */
 #article #byCategory ul {
   overflow: hidden;
+}
+
+/*
+ * CSS Styles that are needed by jScrollPane for it to operate correctly.
+ *
+ * Include this stylesheet in your site or copy and paste the styles below into your stylesheet - jScrollPane
+ * may not operate correctly without them.
+ */
+/* line 9, ../sass/_jsScroll.scss */
+.jspContainer {
+  overflow: hidden;
+  position: relative;
+}
+
+/* line 15, ../sass/_jsScroll.scss */
+.jspPane {
+  position: absolute;
+}
+
+/* line 20, ../sass/_jsScroll.scss */
+.jspVerticalBar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 16px;
+  height: 100%;
+  background: red;
+}
+
+/* line 30, ../sass/_jsScroll.scss */
+.jspHorizontalBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 16px;
+  background: red;
+}
+
+/* line 41, ../sass/_jsScroll.scss */
+.jspVerticalBar *,
+.jspHorizontalBar * {
+  margin: 0;
+  padding: 0;
+}
+
+/* line 47, ../sass/_jsScroll.scss */
+.jspCap {
+  display: none;
+}
+
+/* line 52, ../sass/_jsScroll.scss */
+.jspHorizontalBar .jspCap {
+  float: left;
+}
+
+/* line 57, ../sass/_jsScroll.scss */
+.jspTrack {
+  background: #dde;
+  position: relative;
+}
+
+/* line 63, ../sass/_jsScroll.scss */
+.jspDrag {
+  background: #bbd;
+  position: relative;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+}
+
+/* line 73, ../sass/_jsScroll.scss */
+.jspHorizontalBar .jspTrack,
+.jspHorizontalBar .jspDrag {
+  float: left;
+  height: 100%;
+}
+
+/* line 79, ../sass/_jsScroll.scss */
+.jspArrow {
+  background: #50506d;
+  text-indent: -20000px;
+  display: block;
+  cursor: pointer;
+}
+
+/* line 87, ../sass/_jsScroll.scss */
+.jspArrow.jspDisabled {
+  cursor: default;
+  background: #80808d;
+}
+
+/* line 93, ../sass/_jsScroll.scss */
+.jspVerticalBar .jspArrow {
+  height: 16px;
+}
+
+/* line 98, ../sass/_jsScroll.scss */
+.jspHorizontalBar .jspArrow {
+  width: 16px;
+  float: left;
+  height: 100%;
+}
+
+/* line 105, ../sass/_jsScroll.scss */
+.jspVerticalBar .jspArrow:focus {
+  outline: none;
+}
+
+/* line 110, ../sass/_jsScroll.scss */
+.jspCorner {
+  background: #eeeef4;
+  float: left;
+  height: 100%;
+}
+
+/* Yuk! CSS Hack for IE6 3 pixel bug :( */
+/* line 118, ../sass/_jsScroll.scss */
+* html .jspCorner {
+  margin: 0 -3px 0 0;
 }

@@ -1,11 +1,16 @@
-var timeline, crossnav;
+var timeline, articles, categories;
 
 document.ready = function()
 {
 	timeline = new Timeline();
 
-	$.getJSON('data/articlesClean.json', function(data)
+	$.getJSON('data/articles.json', function(data)
 	{
-		timeline.init(data);
+		articles = data;
+		$.getJSON('data/categories.json', function(data)
+		{
+			categories = data;
+			timeline.init(articles, categories);
+		});
 	});
 };
