@@ -23,24 +23,29 @@ articles;
 
 var init = function init(articles)
 {
-	var l = articles.length, i;
+	var l = articles.length, i, article, image;
 
 	for(i=0; i < l;i++)
 	{
-		articles[i].links.forEach(function(d)
-		{
-			if((/\.(jpeg|jpg|gif|png)$/).test(d.href))
-			{
-				articles[i].image = d.href;
-			}
-		});
+        article = articles[i];
+        if(article && article.links)
+        {
+            for(var j = 0, k = article.links.length; j < k; j++)
+            {
+                image = article.links[j]['href'];
+                if( (/\.(gif|jpg|jpeg|png)$/i).test(image) )
+                {
+                    article.bigImage = image;
+                }
+            }
+        }
 	}
 
-	return JSON.stringify(articles);
+    return JSON.stringify(articles);
 };
 
 
-$.getJSON('data/paleoClean.json', function(data)
+$.getJSON('data/articles.json', function(data)
 {
 	console.log(init(data));
 });

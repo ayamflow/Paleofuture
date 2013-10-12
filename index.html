@@ -7,26 +7,46 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
 
+        <link rel="icon" type="image/png" href="images/favicon.png" />
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
         <div id="preload">
-            Preloader t'as vu
+            <img src="images/layout/header/logo.png">
+            <p>0</p>
+            <div></div>
+            <p>The retro-futuristic journey</p>
         </div>
 
+        <div id="dd-overlay"></div>
+
         <header>
+            <img src="images/layout/header/logo.png">
             <nav>
                 <ul>
-                    <li>Index</li>
-                    <li>Paleobox</li>
-                    <li>Premium</li>
-                    <li>Archives</li>
-                    <li>Some fun stuff</li>
+                    <li data-template="ddMattNovak">
+                        <p>Matt Novak</p>
+                    </li>
+                    <li data-template="ddPaleobox">
+                        <p>PaleoBox</p>
+                    </li>
+                    <li data-template="ddCommunity">
+                        <p>Community</p>
+                    </li>
+                    <li>
+                        <input type="text" placeholder="Type a word to search..." id="search"/>
+                        <div class="results"></div>
+                    </li>
                 </ul>
             </nav>
         </header>
 
         <section id="container">
+            <div id="dropdown"><!--<div class="dents"></div><div class="details"></div><div class="dents reversed"></div>--></div>
+            <div class="concentrics">
+                <div class="outer"></div>
+                <div class="inner"></div>
+            </div>
             <nav id="timeline"></nav>
 
             <div id="articles-thumbs">
@@ -37,22 +57,19 @@
              <div id="article">
                 <div id="categories"></div>
                 <div id="viewer"></div>
-                <div id="byCategory"></div>
             </div>
+
+            <div class="pinterest"></div>
+
+            <!--<div class="stone"></div>-->
         </section>
 
-        <script src="js/vendor/TimelineMax.min.js"></script>
-        <script src="js/vendor/TweenMax.min.js"></script>
-        <script src="js/vendor/jquery-1.8.0.min.js"></script>
-        <script src="js/vendor/jquery-ui-1.9.1.custom.min.js"></script>
-        <script src="js/vendor/jquery.jscrollpane.min.js"></script>
-        <script src="js/vendor/slimScroll.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
+        <script src="js/vendor/preloadjs.min.js"></script>
         <script src="js/vendor/lodash.js"></script>
         <script src="js/Constants.js"></script>
-        <script src="js/ArticleViewer.js"></script>
-        <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.0.min.js"><\/script>')</script>-->
-        <script src="js/Timeline.js"></script>
+        <script src="js/vendor/jquery-ui-1.9.1.custom.min.js"></script>
         <script src="js/main.js"></script>
     </body>
 </html>
