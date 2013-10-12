@@ -1,0 +1,52 @@
+.pinterest{
+    opacity: 0;
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -640px;
+    margin-top: -430px;
+
+    .top{
+        img{
+            position:relative;
+            left: 70px;
+        }
+        .menu{
+            position: relative;
+            font-family: "Din-Regular";
+            font-size: 17px;
+            letter-spacing: 1px;
+            left: -440px;
+            top: -30px;
+            color: #FAE9D4;
+        }
+        ul{
+            position: absolute;
+            left: 815px;
+            top: 16px;
+            color: #343c49;
+            width: 450px;
+            li{
+                margin: 17px;
+                float: left;
+                background: rgba(250, 233, 212, 0.8);
+                padding: 8px;
+                width: 100px;
+                text-align: center;
+            }
+        }
+    }
+
+    ul.bottom{
+        position: relative;
+        left: 60px;
+        top: 70px;
+        li{
+            width: 378px;
+            height: 183px;
+            float: left;
+            margin: 15px 10px;
+        }
+    }
+}

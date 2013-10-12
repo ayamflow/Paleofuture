@@ -1,0 +1,76 @@
+<div class="dents"></div>
+    <span class="tooltip bar"></span>
+    <div class="viewport">
+    <div class="closeArticle">x</div>
+    <div class="toolbar">
+        <span class="theme" data-tip="{{category}}">
+            <img src="images/categories/picto_paleofuture_{{shortCategory}}.png" data-category="{{category}}"/>
+        </span>
+        <span class="date">
+            {{#with date}}
+                {{day}}, {{month}} {{dayNumber}}, {{year}}
+            {{/with}}
+        </span>
+        <ul>
+            <li data-tip="Pin this article"><img src="images/layout/toolbar/picto_paleofuture_pin.png" /></li>
+            <li data-tip="Sources"><img src="images/layout/toolbar/picto_paleofuture_source.png" /></li>
+            <li data-tip="Exlusive content"><img src="images/layout/toolbar/picto_paleofuture_exclusif.png" /></li>
+        </ul>
+    </div>
+
+    <div id="pin">
+        <h2>Share this article</h2>
+        <div class="album">
+            <h3>Choose an album</h3>
+            <ul>
+                <li>Pour Mamie</li>
+                <li>Visionnaires</li>
+                <li>Ils sont fous</li>
+            </ul>
+        </div>
+        <div class="friend">
+            <h3>Share with friends</h3>
+            <ul>
+                <li>Futuristico</li>
+                <li>Les amis du futur</li>
+                <li>Geekos</li>
+            </ul>
+        </div>
+        <input type="text" placeholder="Add a comment" />
+    </div>
+
+    <div class="block">
+        <h2>{{title}}</h2>
+        <div class="content">
+            {{#if image}}
+                <img src="{{image}}" />
+            {{/if}}
+            {{{ text }}}
+        </div>
+        <div id="articlesList">
+            <h2>{{listTitle}}</h2>
+                <div class="scrollList">
+                <ul>
+                    {{#each otherArticles}}
+                    <li>{{this.title}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="fakeComments"><img src="images/fake/comments.png" /></div>
+<div class="share">
+    {{#if pinNumber}}
+        <span class="pinned">
+            {{ pinNumber }} paleofriends have pinned this article
+        </span>
+        {{/if}}
+        |
+        {{#if comments}}}
+        <span class="comments">
+            {{ comments }} comments
+        </span>
+        {{/if}}
+</div>
+<div class="dents reverse"></div>

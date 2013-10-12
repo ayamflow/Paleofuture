@@ -1,0 +1,215 @@
+#dropdown{
+    //border-radius: 3px;
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-user-select: text;
+    //box-shadow: 1px 1px 10px 1px black;
+    font-family: "Din-Regular";
+    text-align: left;
+    position: absolute;
+    z-index: 999999;
+    width: 700px;
+    left: 50%;
+    top: 15px;
+    padding: 20px;
+    margin-left: -350px;
+    opacity:0;
+    display:none;
+    .dents{
+        background: url(../images/layout/dents.png);
+        width:100%;
+        height:6px;
+        position: absolute;
+        left:0;
+        opacity: 0.8;
+        top:-6px;
+        &.reverse{
+            position: relative;
+            top: 33px;
+            left: -20px;
+            width: 739px;
+            -webkit-transform: rotate(180deg);
+        }
+    }
+    h2{
+        font-family: "Din-Black";
+        font-variant: small-caps;
+        font-size: 30px;
+        margin: 5px;
+        margin-bottom: 20px;
+    }
+    .about{
+        .photo{
+            float:left;
+            margin-right: 20px;
+            width:260px;
+            margin-bottom:50px;
+            img{
+                width:260px;
+            }
+            &:after{
+                content:"";
+                clear:both;
+            }
+            p{
+                margin:3px;
+                font-size:11px;
+                font-style: italic;;
+            }
+        }
+        .matt{
+            p{
+                margin:20px;
+            }
+        }
+        ul{
+            position: absolute;
+            right: 20px;
+            bottom: 10px;
+            li{
+                float: left;
+                margin:3px;
+            }
+        }
+        .dents.reverse{
+            top:69px;
+        }
+    }
+
+    .paleobox{
+        .big{
+            float: left;
+            margin-right: 5px;
+            margin-bottom: 50px;
+            p{
+                width: 330px;
+            }
+            img{
+                margin-bottom: 10px;
+            }
+        }
+        ul{
+            position: relative;
+            top: -16px;
+            left: 45px;
+            counter-reset: boxes 0;
+            &::after{
+                -webkit-transform:scale(2);
+                content: url(../images/dropdown/bottom-arrow.png);
+                position: relative;
+                right: 36px;
+                top: 22px;
+            }
+            &::before{
+                content: url(../images/dropdown/top-arrow.png);
+                position: relative;
+                right: -34px;
+                bottom: 8px;
+            }
+            li{
+                &::after{
+                    counter-increment: boxes 1;
+                    content: "PaleoBox #" counter(boxes);
+                    font-family: "Din-Medium";
+                    font-size:14px;
+                    float: left;
+                    margin-bottom: 19px;
+                }
+            }
+        }
+        .dents.reverse{
+            top: 94px;
+        }
+    }
+
+    .community{
+        a{
+            font-family: "Din-Medium";
+            color: black;
+        }
+        .login{
+            float:left;
+            margin-right:20px;
+            width:50%;
+            border-right: 1px solid #AAA;
+            a{
+                position: relative;
+                top: 10px;
+            }
+            input{
+                display:block;
+                &[type=checkbox] {
+                    display:inline;
+                }
+            }
+            label{
+                width:90px;
+                float:left;
+            }
+            p{
+                margin:50px 10px 10px 10px;
+            }
+            &::after{
+                content:"";
+                clear:both;
+            }
+        }
+        .subscribe{
+            p, img, div{
+                margin:20px;
+            }
+            img{
+                display:block;
+            }
+        }
+        .go{
+            width: 160px;
+            left: 370px;
+            bottom: 20px;
+            &:after{
+                left:177px;
+            }
+        }
+        .dents.reverse{
+            top:100px;
+        }
+    }
+    .go {
+        position: absolute;
+        width: 150px;
+        height: 30px;
+        line-height: 30px;
+        padding: 0px 10px 3px 8px;
+        font-size: 15px;
+        text-align: center;
+        color: rgb(250, 233, 212);
+        background: #999;
+        border: 0px none white;
+        border-radius: 0px 3px 3px 0px;
+        text-shadow: rgba(0, 0, 0, 0.6) 1px 1px 1px;
+        left: 370px;
+        bottom: 70px;
+        &:after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-width: 16px;
+            border-style: solid;
+            border-color: transparent transparent transparent #999;
+            top: 0px;
+            left: 167px;
+        }
+    }
+    .ddClose{
+        width:5px;
+        height:5px;
+        position:absolute;
+        top:5px;
+        right:15px;
+        padding: 10px 10px 20px 10px;
+        font-family: "Din-Black";
+        &:hover{
+            cursor: pointer;
+        }
+    }
+}
