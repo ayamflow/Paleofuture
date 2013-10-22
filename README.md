@@ -1,32 +1,41 @@
-PALEOFUTURE
-/* Léa Mariani & Florian Morel */
+#PALEOFUTURE
+#### Design & concept, graphic design, development by Léa Mariani & Florian Morel
 
-Développé sur Chrome avec une résolution > 1440x900 (et viewport du navigateur rêglé à 1440x900)
+First project at Gobelins school. Reintepretation of Matt Novak's [Paleofuture blog](http://www.paleofuture.com/).
 
-/* Librairies
-Javascript natif & prototype pour la structure (classes principales et méthodes),
-jQuery, PreloadJS (préchargement), Handlebars (templates de rendu HTML), jQuery UI (drag et autocomplete), jqDock (Mac OS X like dock), lodash (fork de underscore.js pour manipuler le JSON), slimScroll (ascenseur personnalisés), TimelineMax/TweenMax (Gestion des tweens et requestAnimationFrame)
+Conceived for Chrome with a resolution > 1440x900
+*(WIP responsive)*
 
-/* CSS2-3 avec compass (SASS)
+### Libraries
+* Vanilla JS
+* JQuery (selectors and stuff)
+* JQuery UI (autocomplete, drag)
+* PreloadJS (preload all images)
+* Handlebars
+* jqDock (Mac OS X like dock)
+* lodash (better underscore.js)
+* slimScroll
+* Greensock (TimelineMax, TweenMax)
+* rAF FTW
+* Compass
 
-/* Arborescence
+### Structure
+* /js/
+	* main.js = preload & init
+	* Timeline.js => main controller (handle timeline, articles, and main events)
+	* ArticleViewer.js => Article View
+	* other : misc utils
 
-/js/
-	main.js = preloader et init
-	Timeline.js => classe pricipale (Vue de la timeline, des miniatures d'articles, gestion des évènements principaux)
-	ArticleViewer.js => vue d'un article
-	le reste : utilitaires divers
+* Features
+	* Timeline with dynamic current year and decade/year scrolling
+	* Parallax & scroll of article container (depending on the timeline position)
+	* Search engine with autocomplete on article name & result view
+	* Article view :
+    	* Related articles (right sidebar), category filters (left dock)
+   		* toolbar with current category reminder and social features access (pin/share), ...
 
-/* Features
--Timeline avec changement dynamique de l'année courante, défilement des décennies et années (dessous/dessous)
--Parallaxes et croll du conteneur des articles en fonction de la timeline
--Moteur de recherche avec autocomplete sur les noms des articles + affichage de l'article choisi
--Ouverture d'article :
-    consultation des articles thématiques (barre de droite), consultation des articles par catégories (dock à gauche)
-    toolbar avec rappel de la catégorie courante, accès aux fonctions sociales (marquer/partager), ...
+* Some undevelopped/fake features for the demo:
+	* Pins page (access with Community > Submit) *(It's just a jpeg)*
+	* Commentaries on article view *(It's just jpegs)*
 
-/* Fakes pour la démo (features non développées)
-page pinterest (Clic sur Community > Submit) avec retour sur la home en cliquant sur le logo
-affichage des commentaires dans les vues des articles
-
-/* Un bon travail sur la fluidité de l'ensemble....what else ?
+Pretty much it. Although this project was not supposed to be totally working, I tried to code the smoothest experience possible. Minimal jank !
